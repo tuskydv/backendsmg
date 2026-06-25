@@ -118,6 +118,72 @@ router.post('/logout', (req, res) => {
 });
 
 // ════════════════════════════════════════
+//  DEPARTMENT PORTALS ACCESS & LOGGING
+// ════════════════════════════════════════
+router.post('/department/login', async (req, res) => {
+    try {
+        const { emailOrEmpId, password, department } = req.body;
+        if (!emailOrEmpId || !password || !department) {
+            return res.status(400).json({ message: 'Employee ID/Email, password, and department are required' });
+        }
+        
+        // Find user in database
+        const user = await User.findOne({
+            $or: [
+                { email: emailOrEmpId },
+                { empId: emailOrEmpId }
+            ]
+        });
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+        
+        // Create Portal Log entry
+        const PortalLog = require('../models/PortalLog');
+        const log = await PortalLog.create({
+            portal: department,
+            user: user._id,
+            userName: user.name,
+            userEmpId: user.empId,
+            loginTime: new Date()
+        });
+        
+        const userObj = user.toObject();
+        delete userObj.password;
+        
+        res.json({ success: true, user: userObj, logId: log._id });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+router.post('/department/logout', async (req, res) => {
+    try {
+        const { logId } = req.body;
+        if (logId) {
+            const PortalLog = require('../models/PortalLog');
+            await PortalLog.findByIdAndUpdate(logId, { logoutTime: new Date() });
+        }
+        res.json({ success: true, message: 'Logout logged successfully' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+router.get('/department/logs/:portal', async (req, res) => {
+    try {
+        const PortalLog = require('../models/PortalLog');
+        const logs = await PortalLog.find({ portal: req.params.portal })
+            .sort({ loginTime: -1 })
+            .limit(100);
+        res.json(logs);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// ════════════════════════════════════════
 //  USERS (EMPLOYEE CRUD) & RESUME PARSING
 // ════════════════════════════════════════
 router.post('/resume/parse', async (req, res) => {
