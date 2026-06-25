@@ -915,7 +915,14 @@ router.get('/ideas', async (_req, res) => {
 });
 router.post('/ideas', async (req, res) => {
     try { res.status(201).json(await Idea.create(req.body)); }
-    catch (err) { res.status(500).json({ message: err.message }); }
+    catch (err) { res.status(500).json({ message: err.message });
+router.put('/ideas/:id/upvote', async (req, res) => {
+    try {
+        const idea = await Idea.findByIdAndUpdate(req.params.id, { $inc: { votes: 1 } }, { new: true });
+        res.json(idea);
+    } catch (err) { res.status(500).json({ message: err.message }); }
+});
+ }
 });
 
 // ════════════════════════════════════════
