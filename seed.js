@@ -47,6 +47,22 @@ async function seed() {
     const bcrypt = require('bcryptjs');
     const hashedPassword = await bcrypt.hash('password', 10);
 
+    const deptPasswords = {
+        reception: await bcrypt.hash('reception', 10),
+        hr: await bcrypt.hash('hr', 10),
+        finance: await bcrypt.hash('finance', 10),
+        timeoffice: await bcrypt.hash('timeoffice', 10),
+        canteen: await bcrypt.hash('canteen', 10),
+        events: await bcrypt.hash('events', 10),
+        technician: await bcrypt.hash('technician', 10),
+        assembly: await bcrypt.hash('assembly', 10),
+        marketing: await bcrypt.hash('marketing', 10),
+        transport: await bcrypt.hash('transport', 10),
+        sim: await bcrypt.hash('sim', 10),
+        uniform: await bcrypt.hash('uniform', 10),
+        guesthouse: await bcrypt.hash('guesthouse', 10)
+    };
+
     // ── USERS (Team members from SMG Progress Report) ──
     const users = await User.insertMany([
         { name:"Abhishek Kumar", email:"abhishek@smg.com", password:hashedPassword, role:"admin", empId:"SMG-2024-001", dept:"IT", designation:"Technical Lead", avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=Abhishek&backgroundColor=b6e3f4", shift:"General (9:00 - 18:00)", reportingTo:"Akriti Bhardwaj", phone:"+91 98765 10001", emergencyContact:"+91 98765 10002", dateOfBirth:"12-Mar-1999", dateOfJoining:"01-Jun-2024", bloodGroup:"B+", address:"Flat 305, Skyline Residency, Sector 75, Noida, UP - 201301", education:[{degree:"B.Tech in Computer Science",institution:"ABES Engineering College",year:"2017-2021",grade:"8.5 CGPA"}], certifications:[{name:"AWS Certified Cloud Practitioner",issuer:"AWS",year:"2023"},{name:"MongoDB Developer Certificate",issuer:"MongoDB Inc",year:"2024"},{name:"React Advanced Patterns",issuer:"Meta",year:"2024"}], skills:["React","Node.js","MongoDB","TypeScript","REST APIs","System Architecture","Team Leadership"], languages:["Hindi (Native)","English (Fluent)"] },
@@ -55,7 +71,21 @@ async function seed() {
         { name:"Aman Kumar Singh", email:"aman@smg.com", password:hashedPassword, role:"employee", empId:"SMG-2024-003", dept:"IT", designation:"Database Engineer", avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=Aman&backgroundColor=b6e3f4", shift:"General (9:00 - 18:00)", reportingTo:"Abhishek Kumar", phone:"+91 98765 40001", dateOfBirth:"08-Jan-2000", dateOfJoining:"01-Jun-2024", bloodGroup:"AB+", address:"C-22, Vasundhara Enclave, Ghaziabad, UP", education:[{degree:"B.Tech in Computer Science",institution:"Galgotias University",year:"2018-2022",grade:"8.0 CGPA"}], certifications:[{name:"MongoDB Certified DBA",issuer:"MongoDB Inc",year:"2024"},{name:"SQL Server Fundamentals",issuer:"Microsoft",year:"2023"}], skills:["MongoDB","Mongoose ODM","Database Design","Data Modelling","Index Optimization","Aggregation Pipelines"], languages:["Hindi (Native)","English (Fluent)"] },
         { name:"Indra Sai", email:"indra@smg.com", password:hashedPassword, role:"employee", empId:"SMG-2024-004", dept:"Quality", designation:"QA & Test Engineer", avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=Indra&backgroundColor=ffd5dc", shift:"General (9:00 - 18:00)", reportingTo:"Akriti Bhardwaj", phone:"+91 98765 50001", dateOfBirth:"25-May-1999", dateOfJoining:"01-Jun-2024", bloodGroup:"O-", address:"D-5, Sector 62, Noida, UP", education:[{degree:"B.Tech in Electronics & Communication",institution:"SRM University",year:"2017-2021",grade:"8.3 CGPA"}], certifications:[{name:"ISTQB Foundation",issuer:"ISTQB",year:"2023"},{name:"Postman API Testing",issuer:"Postman",year:"2024"}], skills:["API Testing","Postman","Integration Testing","Bug Tracking","Test Case Design","Quality Assurance"], languages:["Hindi","English (Fluent)","Telugu (Native)"] },
         { name:"Ayush Gupta", email:"ayush@smg.com", password:hashedPassword, role:"employee", empId:"SMG-2024-005", dept:"IT", designation:"DevOps & QA Support", avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=Ayush&backgroundColor=c0aede", shift:"General (9:00 - 18:00)", reportingTo:"Abhishek Kumar", phone:"+91 98765 60001", dateOfBirth:"14-Nov-1999", dateOfJoining:"01-Jun-2024", bloodGroup:"B-", address:"E-Block, Indirapuram, Ghaziabad, UP", education:[{degree:"B.Tech in Computer Science",institution:"Bennett University",year:"2018-2022",grade:"8.1 CGPA"}], certifications:[{name:"AWS Solutions Architect Associate",issuer:"AWS",year:"2024"},{name:"Docker Certified Associate",issuer:"Docker",year:"2023"}], skills:["Git","GitHub Actions","CI/CD","Docker","Linux","Cloud Deployment","Shell Scripting"], languages:["Hindi (Native)","English (Fluent)"] },
-        { name:"Department Portal", email:"dept@smg.com", password:hashedPassword, role:"department", empId:"SMG-2024-999", dept:"Management", designation:"Department Portal Access", avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=Department&backgroundColor=c0aede", shift:"General (9:00 - 18:00)", dateOfJoining:"01-Jun-2024" }
+        { name:"Department Portal", email:"dept@smg.com", password:hashedPassword, role:"department", empId:"SMG-2024-999", dept:"Management", designation:"Department Portal Access", avatar:"https://api.dicebear.com/7.x/avataaars/svg?seed=Department&backgroundColor=c0aede", shift:"General (9:00 - 18:00)", dateOfJoining:"01-Jun-2024" },
+        // Department Generic Users
+        { name:"Reception Desk", email:"reception@smg", password:deptPasswords.reception, role:"department", empId:"SMG-DEPT-RECEPTION", dept:"reception", designation:"Reception Access" },
+        { name:"HR Desk", email:"hr@smg", password:deptPasswords.hr, role:"department", empId:"SMG-DEPT-HR", dept:"hr", designation:"HR Access" },
+        { name:"Finance Desk", email:"finance@smg", password:deptPasswords.finance, role:"department", empId:"SMG-DEPT-FINANCE", dept:"finance", designation:"Finance Access" },
+        { name:"Time Office Desk", email:"timeoffice@smg", password:deptPasswords.timeoffice, role:"department", empId:"SMG-DEPT-TIMEOFFICE", dept:"time-office", designation:"Time Office Access" },
+        { name:"Canteen Desk", email:"canteen@smg", password:deptPasswords.canteen, role:"department", empId:"SMG-DEPT-CANTEEN", dept:"canteen", designation:"Canteen Access" },
+        { name:"Events Desk", email:"events@smg", password:deptPasswords.events, role:"department", empId:"SMG-DEPT-EVENTS", dept:"events", designation:"Events Access" },
+        { name:"Technician Desk", email:"technician@smg", password:deptPasswords.technician, role:"department", empId:"SMG-DEPT-TECHNICIAN", dept:"technician", designation:"Technician Access" },
+        { name:"Assembly Desk", email:"assembly@smg", password:deptPasswords.assembly, role:"department", empId:"SMG-DEPT-ASSEMBLY", dept:"assembly", designation:"Assembly Access" },
+        { name:"Marketing Desk", email:"marketing@smg", password:deptPasswords.marketing, role:"department", empId:"SMG-DEPT-MARKETING", dept:"marketing", designation:"Marketing Access" },
+        { name:"Transport Desk", email:"transport@smg", password:deptPasswords.transport, role:"department", empId:"SMG-DEPT-TRANSPORT", dept:"transport", designation:"Transport Access" },
+        { name:"SIM Desk", email:"sim@smg", password:deptPasswords.sim, role:"department", empId:"SMG-DEPT-SIM", dept:"sim", designation:"SIM Access" },
+        { name:"Uniform Desk", email:"uniform@smg", password:deptPasswords.uniform, role:"department", empId:"SMG-DEPT-UNIFORM", dept:"uniform", designation:"Uniform Access" },
+        { name:"Guest House Desk", email:"guesthouse@smg", password:deptPasswords.guesthouse, role:"department", empId:"SMG-DEPT-GUESTHOUSE", dept:"guesthouse", designation:"Guest House Access" }
     ]);
     console.log(`Seeded ${users.length} users.`);
     const abhishek = users[0], akriti = users[1], randhir = users[2], aman = users[3], indra = users[4], ayush = users[5], deptUser = users[6];
